@@ -41,33 +41,39 @@ function exportAsPDF(md: string, clientName: string) {
   setTimeout(() => { w.print(); }, 900)
 }
 
-// ── DOCX ──────────────────────────────────────────────────────────────────────
-async function exportAsDocx(md: string, filename: string, clientName: string) {
-  const {
-    Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-    AlignmentType, HeadingLevel, BorderStyle, WidthType, ShadingType,
-    VerticalAlign, LevelFormat, ImageRun,
-  } = await import('docx')
+function cell(
+  text: string,
+  w: number,
+  isHdr = false,
+  bg?: string,
+  textColor?: string,
+  align = AlignmentType.CENTER
+) {
+  const tc = textColor || (isHdr ? C.white : C.dark)
 
-  const bdr = (col = C.border) => ({ style: BorderStyle.SINGLE, size: 4, color: col })
-  const bdrs = (col = C.border) => ({ top: bdr(col), bottom: bdr(col), left: bdr(col), right: bdr(col) })
-  const noBdr = () => ({ top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.NONE }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE } })
-
-  function cell(text: string, w: number, isHdr = false, bg?: string, textColor?: string, align: AlignmentType = AlignmentType.CENTER) {
-    const tc = textColor || (isHdr ? C.white : C.dark)
-    return new TableCell({
-      borders: bdrs(isHdr ? C.navy : C.border),
-      width: { size: w, type: WidthType.DXA },
-      shading: bg ? { fill: bg, type: ShadingType.CLEAR } : undefined,
-      margins: { top: 100, bottom: 100, left: 140, right: 140 },
-      verticalAlign: VerticalAlign.CENTER,
-      children: [new Paragraph({
+  return new TableCell({
+    borders: bdrs(isHdr ? C.navy : C.border),
+    width: { size: w, type: WidthType.DXA },
+    shading: bg ? { fill: bg, type: ShadingType.CLEAR } : undefined,
+    margins: { top: 100, bottom: 100, left: 140, right: 140 },
+    verticalAlign: VerticalAlign.CENTER,
+    children: [
+      new Paragraph({
         alignment: align,
-        children: [new TextRun({ text: text.trim(), bold: isHdr, color: tc, size: isHdr ? 20 : 19, font: 'Arial' })],
+        children: [
+          new TextRun({
+            text: text.trim(),
+            bold: isHdr,
+            color: tc,
+            size: isHdr ? 20 : 19,
+            font: 'Arial',
+          }),
+        ],
         spacing: { before: 0, after: 0 },
-      })],
-    })
-  }
+      }),
+    ],
+  })
+}
 
   function hdrBar(text: string) {
     return new Table({

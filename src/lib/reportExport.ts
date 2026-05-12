@@ -192,11 +192,63 @@ function cell(
   )
 
   const doc = new Document({
-    numbering: { config: [{ reference: 'bullets', levels: [{ level: 0, format: LevelFormat.BULLET, text: '\u2022', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 360 } } } }] }] },
-    styles: { default: { document: { run: { font: 'Arial', size: 20, color: C.dark } } } },
-    sections: [{ properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1080, right: 1080, bottom: 1080, left: 1080 } } },
-      children: paragraphs as InstanceType<typeof Paragraph>[] }],
-  })
+  numbering: {
+    config: [
+      {
+        reference: 'bullets',
+        levels: [
+          {
+            level: 0,
+            format: LevelFormat.BULLET,
+            text: '\u2022',
+            alignment: AlignmentType.LEFT,
+            style: {
+              paragraph: {
+                indent: {
+                  left: 540,
+                  hanging: 360,
+                },
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+
+  styles: {
+    default: {
+      document: {
+        run: {
+          font: 'Arial',
+          size: 20,
+          color: C.dark,
+        },
+      },
+    },
+  },
+
+  sections: [
+    {
+      properties: {
+        page: {
+          size: {
+            width: 12240,
+            height: 15840,
+          },
+          margin: {
+            top: 1080,
+            right: 1080,
+            bottom: 1080,
+            left: 1080,
+          },
+        },
+      },
+
+      children: paragraphs as InstanceType<typeof Paragraph>[],
+    },
+  ],
+})
 
   const buf = await Packer.toBuffer(doc)
   saveAs(new Blob([new Uint8Array(buf)], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }), `${filename}.docx`)

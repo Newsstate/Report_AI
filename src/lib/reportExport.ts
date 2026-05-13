@@ -1,4 +1,3 @@
-```ts
 import { saveAs } from 'file-saver'
 import type { OutputFormat } from '@/types'
 
